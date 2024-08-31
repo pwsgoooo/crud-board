@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.BoardMapper">
+
+    <select id="printBoardList" resultType="com.example.demo.dto.BoardDto">
+        SELECT *
+        FROM board
+    </select>
+
+
+    <select id="printBoardById" parameterType="java.lang.Long" resultType="com.example.demo.dto.BoardDto">
+        SELECT * FROM board b WHERE b.id = #{id}
+    </select>
+
+
+    <insert id="registerBoard" parameterType="com.example.demo.dto.BoardDto">
+        INSERT INTO board (title,content,reg_date,reg_ip,reg_member)
+        VALUES (#{title}, #{content}, #{reg_date}, #{reg_ip}, #{reg_member})
+    </insert>
+
+    <insert id="registerFiles" parameterType="com.example.demo.dto.BoardFileDto">
+        INSERT INTO board_file (board_id,name,mime_type,reg_date,reg_ip,reg_member)
+        VALUES (#{board_id}, #{name}, #{mime_type}, #{reg_date}, #{reg_ip}, #{reg_member})
+    </insert>
+
+    <update id="updtBoard" parameterType="com.example.demo.dto.BoardDto">
+        UPDATE board
+        SET title = #{title}, content = #{content}, mod_ip = #{mod_ip}, mod_date = #{mod_date}, mod_member = #{mod_member}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delBoard" parameterType="java.lang.Long">
+        Delete from  board
+        WHERE id = #{id} CASCADE
+    </delete>
+
+    <resultMap id="boardCommentResultMap" type="com.example.demo.dto.DetailViewPageDto">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <collection property="comments" ofType="com.example.demo.dto.Comments" javaType="java.util.List">
+            <id property="commentId" column="id"/>
+            <result property="comment" column="comment"/>
+            <result property="commentParentId" column="parent_id"/>
+            <result property="commentRegDate" column="reg_date"/>
+            <result property="member" column="reg_member"/>
+            <result property="commentRegIp" column="reg_ip"/>
+            <result property="commentModDate" column="mod_date"/>
+            <result property="commentModIp" column="mod_ip"/>
+            <result property="commentMember" column="mod_member"/>
+        </collection>
+    </resultMap>
+
+    <select id="printdetail" parameterType="java.lang.Long" resultMap="boardCommentResultMap">
+        SELECT
+            b.id AS id,
+            b.title AS title,
+            b.content AS content,
+            bc.id AS comment_id,
+            bc.comment AS comment,
+            bc.parent_id AS comment_parent_id,
+            bc.reg_date AS comment_reg_date,
+            bc.reg_member AS member
+
+        FROM
+            public.board b
+                LEFT JOIN
+            public.board_comment bc
+            ON
+                b.id = bc.board_id
+    </select>
+</mapper>
+
+
+
+
