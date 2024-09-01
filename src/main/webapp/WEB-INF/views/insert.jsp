@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
+<%@ page language="java" contentType="text/html; charset=utf-8"
          pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -67,7 +67,7 @@
 <body>
 <div class="container">
     <h3>게시판 등록</h3>
-    <form id="registerform" action="/register" method="post">
+    <form id="registerform" action="/register" method="post" enctype="multipart/form-data">
         <input class="w100" type="text" name="title" id="title" placeholder=" inset title here (*´ ˘ `*).｡oO ( ♡ )"/>
         <br/>
         <textarea class="w100" name="content" id="content" placeholder="insert content here (ᇂ_Jᇂ)"></textarea>
@@ -84,7 +84,7 @@
             </tr>
             <td></td>
             <td style=" text-align: center;">
-                <input type="file" class="btn bggreen" id="attfile" value="파일 첨부" multiple/>
+                <input type="file" class="btn bggreen" id="files" name="files" value="파일 첨부" multiple/>
                 <!--                    <button class="btn bggreen" id="attfile">파일 첨부</button>-->
             </td>
             <td></td>
@@ -98,38 +98,66 @@
         <button class="btn bggray" onclick="backchk()">취소</button>
     </div>
 </div>
-<script defer>
+<script>
 
-    <%-- print multiple attach files --%>
-    const flist = []
-    document.getElementById("attfile").addEventListener('input',function(event){
-        const chosenfile = event.target.files;
-        const infnames = ['f01','f02','f03','f04','f05','f06'];
+    document.getElementById("files").addEventListener('input',
+        function (event) {
+            const flist = [];
+            const infnames = ['f01', 'f02', 'f03', 'f04', 'f05', 'f06'];
 
-        for (let i = 0; i < chosenfile.length && i < infnames.length; i++){
-            console.log(flist.length);
-            const cfile = chosenfile[i]
-            document.getElementById(infnames[flist.length]).textContent = cfile.name;
+            // let chosenfile = event.target.files[i];
+            let chosenfile = event.target.files;
+            for (let i = 0; i < chosenfile.length && i < infnames.length; i++) {
+                console.log(flist.length);
+                const cfile = chosenfile[i];
+                document.getElementById(infnames[i]).textContent = cfile.name;
 
-            flist.push(cfile);
-        };
-        console.log(flist);
+                flist.push(cfile);
+            }
+            console.log(flist);
+
     });
-    // end of flist_print
-
-
-    document.getElementById("submit").addEventListener('click',function(e){
+    document.getElementById("submit").addEventListener('click', function (e) {
         e.preventDefault();
 
         const form = document.getElementById("registerform");
-        formData = new FormData(form);
-        for(i = 0; i<flist.length & i;i++){
-            formData.append("files[i]",flist[i]);
-        };
-// body: formData
+        const formData = new FormData(form);
+
+        <%--for (let pair of formData.entries()) {--%>
+        <%--    console.log(`${pair[0]}: ${pair[1]}`);--%>
+        <%--}--%>
+        // const files = document.getElementById("files").file;
+
+        const fileIn = document.getElementById("files");
+        const fileList = fileIn.files;
+
+        const title = document.getElementById("title").value;
+        const content = document.getElementById("content").value;
+
+        // console.log(formData.title.);
+        // console.log(formData.content.value);
+        // console.log(formData.files.files);
+
+
+        // const flist = files.files;
+
+        for (let i = 0; i < fileList.length; i++) {
+            formData.append("files", fileList[i]);
+        }
+        //console.log(typeof (files));// obj
+
+        // formData.append("files", files);
+        formData.append("title",title);
+        formData.append("content",content);
+
+        <%--for (let pair of formData.entries()) {--%>
+        <%--    console.log(`${pair[0]}: ${pair[1]}`);--%>
+        <%--}--%>
+
+        // body: JSON.stringify(formData)
         fetch("/register", {
-            method : "POST",
-            body: JSON.stringify(formData)
+            method: "POST",
+            body: formData,
         })
         .then((response) => response.json())
         .then((data) => console.log(data))
@@ -139,12 +167,14 @@
     });
 
 
-    function uptodbchk(){
-        if (confirm("글 등록을 요청합니다.")){
-            window.location.href="/register";
+    function uptodbchk() {
+        if (confirm("글 등록을 요청합니다.")) {
+            window.location.href = "/register";
         }
-    }function backchk(){
-        if (confirm("작성중인 글이 있습니다. 이전 페이지로 이동하시겠습니까?")){
+    }
+
+    function backchk() {
+        if (confirm("작성중인 글이 있습니다. 이전 페이지로 이동하시겠습니까?")) {
             window.history.back()
         }
     }

@@ -16,18 +16,18 @@
 
 
     <insert id="registerBoard" parameterType="com.example.demo.dto.BoardDto">
-        INSERT INTO board (title,content,reg_date,reg_ip,reg_member)
-        VALUES (#{title}, #{content}, #{reg_date}, #{reg_ip}, #{reg_member})
+        INSERT INTO board (id,title,content,reg_date,reg_ip,reg_member)
+        VALUES (#{id}, #{title}, #{content}, #{regDate}, #{regIp}, #{regMember})
     </insert>
 
     <insert id="registerFiles" parameterType="com.example.demo.dto.BoardFileDto">
-        INSERT INTO board_file (board_id,name,mime_type,reg_date,reg_ip,reg_member)
-        VALUES (#{board_id}, #{name}, #{mime_type}, #{reg_date}, #{reg_ip}, #{reg_member})
+        INSERT INTO board_file (file_uuid,board_id,name,mime_type,reg_ip,reg_member)
+        VALUES (#{fileUuid}, #{boardId}, #{name}, #{mimeType}, #{regIp}, #{regMember})
     </insert>
 
     <update id="updtBoard" parameterType="com.example.demo.dto.BoardDto">
         UPDATE board
-        SET title = #{title}, content = #{content}, mod_ip = #{mod_ip}, mod_date = #{mod_date}, mod_member = #{mod_member}
+        SET title = #{title}, content = #{content}, mod_ip = #{mod_ip}, mod_date = #{modDate}, mod_member = #{modMember}
         WHERE id = #{id}
     </update>
 
@@ -40,8 +40,8 @@
         <id property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
-        <collection property="comments" ofType="com.example.demo.dto.Comments" javaType="java.util.List">
-            <id property="commentId" column="id"/>
+        <collection property="com.example.demo.dto.Comments" ofType="com.example.demo.dto.Comments" javaType="java.util.List">
+            <id property="commentId" column="comment_id"/>
             <result property="comment" column="comment"/>
             <result property="commentParentId" column="parent_id"/>
             <result property="commentRegDate" column="reg_date"/>

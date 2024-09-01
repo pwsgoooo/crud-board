@@ -1,0 +1,10 @@
+com\example\demo\mapper\BoardMapper.class
+com\example\demo\dto\DetailViewPageDto.class
+com\example\demo\dto\Comments.class
+com\example\demo\service\BoardService.class
+com\example\demo\dto\BoardFileDto.class
+com\example\demo\controller\BoardController.class
+com\example\demo\dto\MemberDto.class
+com\example\demo\dto\BoardDto.class
+com\example\demo\dto\BoardCommentDto.class
+com\example\demo\BoardApplication.class

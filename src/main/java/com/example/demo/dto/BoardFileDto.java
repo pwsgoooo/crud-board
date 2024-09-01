@@ -16,6 +16,10 @@ import java.util.UUID;
 public class BoardFileDto {
 
     private UUID fileUuid;
+    public BoardFileDto(){
+        this.fileUuid = UUID.randomUUID();
+    }
+
     private Long boardId;
     private String name;
     private String mimeType;
